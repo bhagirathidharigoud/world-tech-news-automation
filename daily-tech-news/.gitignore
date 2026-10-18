@@ -1,0 +1,57 @@
+# ─────────────────────────────────────────────
+#  .gitignore
+#
+#  Files and folders listed here will NEVER
+#  be uploaded to GitHub.
+#
+#  Rule: If it contains secrets or is generated
+#  automatically, it belongs here.
+# ─────────────────────────────────────────────
+
+
+# ── SECRETS — never commit these ──────────────
+.env
+
+
+# ── PYTHON CACHE ──────────────────────────────
+# Python creates these automatically — not needed in Git
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+
+# ── VIRTUAL ENVIRONMENT ───────────────────────
+# The folder pip creates when you run: python -m venv venv
+venv/
+env/
+.venv/
+ENV/
+
+
+# ── VS CODE SETTINGS ──────────────────────────
+# Personal editor settings — different for every developer
+.vscode/
+
+
+# ── OS GENERATED FILES ────────────────────────
+# Windows
+Thumbs.db
+desktop.ini
+
+# Mac
+.DS_Store
+
+
+# ── LOGS ──────────────────────────────────────
+*.log
+logs/
+
+
+# ── TEMPORARY FILES ───────────────────────────
+*.tmp
+*.temp
+
+# ── STARTUP SCRIPT ────────────────────────────────────────────
+start.bat

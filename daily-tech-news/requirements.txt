@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────
+#  Daily Global Tech News Scheduler
+#  Python Dependencies
+#
+#  Install all packages with:
+#      pip install -r requirements.txt
+# ─────────────────────────────────────────────
+
+# HTTP requests — used to call news APIs
+requests==2.31.0
+
+# MongoDB driver for Python — used to read/write from MongoDB
+pymongo==4.6.1
+
+# Web framework — used to build REST APIs
+flask==3.0.2
+
+# Reads .env files and loads them as environment variables
+python-dotenv==1.0.1
+
+# Job scheduler — runs the news fetch job every day at 6 AM
+APScheduler==3.10.4
+
+# Helps Flask handle datetime objects in JSON responses
+flask-json==0.3.4

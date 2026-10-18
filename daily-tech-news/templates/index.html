@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Daily Global Tech News</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0e17;color:#c9d1d9;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+button{cursor:pointer;font-family:inherit}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:230px;background:#0d1120;border-right:1px solid #1e2638;position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100}
+.sidebar::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.03;pointer-events:none;z-index:0}
+.brand{padding:0 0 18px;border-bottom:1px solid #1e2638;position:relative;z-index:1}
+.brand::before{content:'';display:block;height:3px;background:linear-gradient(to right,#6366f1,#8b5cf6);margin-bottom:18px}
+.brand h1{font-size:15px;font-weight:700;color:#f0f6fc;line-height:1.3;padding:0 16px}
+.brand p{font-size:11px;color:#8b949e;margin-top:3px;padding:0 16px}
+.nav{flex:1;padding:10px 8px;overflow-y:auto;position:relative;z-index:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:#8b949e;border:none;background:none;width:100%;text-align:left;transition:all .15s;border-left:2px solid transparent;border-radius:6px;margin-bottom:2px}
+.nav-item:hover{background:#1e2638;color:#c9d1d9}
+.nav-item.active{background:linear-gradient(135deg,#1e1b4b,#1e2a4a);color:#f0f6fc;border-left-color:#6366f1}
+.nav-icon{font-size:18px;width:20px;text-align:center}
+.sidebar-footer{padding:12px 16px;border-top:1px solid #1e2638;position:relative;z-index:1}
+#conn-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#da3633;margin-right:6px;vertical-align:middle;transition:background .3s}
+#conn-dot.ok{background:#10b981}
+#conn-text{font-size:11px;color:#8b949e}
+
+/* MAIN */
+.content{margin-left:230px;flex:1;padding:32px 40px;max-width:1400px}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:24px}
+.page-header h2{font-size:26px;font-weight:800;color:#f1f5f9;letter-spacing:-0.5px}
+.page-header p{font-size:13px;color:#64748b;margin-top:4px}
+
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:linear-gradient(135deg,#111827 0%,#0f172a 100%);border:1px solid #1e293b;border-radius:14px;padding:22px 20px;box-shadow:0 4px 24px rgba(0,0,0,0.3);border-top:4px solid #6366f1}
+.stat-card:nth-child(1){border-top-color:#6366f1}
+.stat-card:nth-child(2){border-top-color:#10b981}
+.stat-card:nth-child(3){border-top-color:#f59e0b}
+.stat-card:nth-child(4){border-top-color:#3b82f6}
+.stat-card .val{font-size:36px;font-weight:800;color:#58a6ff;line-height:1}
+.stat-card .lbl{font-size:12px;color:#64748b;margin-top:6px;text-transform:uppercase;letter-spacing:0.8px}
+
+/* SECTION */
+.section{margin-bottom:28px}
+.section-title{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-left:3px solid #6366f1;padding-left:10px}
+.section-title .cnt{font-size:11px;font-weight:400;background:#21262d;color:#8b949e;padding:2px 8px;border-radius:10px}
+
+/* NEWS CARDS */
+.news-grid{display:flex;flex-direction:column;gap:10px}
+.news-card{background:#0d1120;border:1px solid #1e2638;border-radius:12px;padding:18px 20px;transition:border-color .2s,box-shadow .2s}
+.news-card:hover{border-color:#6366f1;box-shadow:0 0 0 1px #6366f1}
+.news-card.new-flash{animation:newflash 1.5s ease-out}
+@keyframes newflash{0%{border-color:#10b981;background:#0a2a1a}100%{border-color:#1e2638;background:#0d1120}}
+.news-card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
+.cat-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.news-card-title{font-size:15px;font-weight:600;color:#f1f5f9;line-height:1.4}
+.news-card-desc{font-size:13px;color:#64748b;line-height:1.6;margin-bottom:10px}
+.news-card-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:#6e7681;align-items:center}
+.score-badge{background:#21262d;border:1px solid #30363d;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600}
+.score-badge.hi{background:#052e16;border-color:#059669;color:#34d399}
+.score-badge.mid{background:#1c1400;border-color:#d97706;color:#fbbf24}
+.score-badge.lo{background:#1e293b;color:#64748b}
+.read-link{margin-left:auto;font-size:11px;color:#58a6ff}
+
+/* CATEGORY PILLS */
+.pill-ai{background:#2e1065;color:#c4b5fd}
+.pill-agentic{background:#451a03;color:#fed7aa}
+.pill-quantum{background:#022c22;color:#6ee7b7}
+.pill-cloud{background:#0c1a3a;color:#93c5fd}
+.pill-cyber{background:#450a0a;color:#fca5a5}
+.pill-prog{background:#052e16;color:#86efac}
+.pill-devtools{background:#1c1400;color:#fde68a}
+.pill-startups{background:#0c2a4a;color:#7dd3fc}
+.pill-companies{background:#2e1065;color:#d8b4fe}
+.pill-other{background:#1e293b;color:#94a3b8}
+
+/* BRIEFING */
+.briefing-stub{background:#0d1120;border:1px solid #1e2638;border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .2s;margin-bottom:8px}
+.briefing-stub:hover{border-color:#6366f1}
+.briefing-stub h4{font-size:13px;font-weight:600;color:#f0f6fc}
+.briefing-stub .bmeta2{font-size:11px;color:#8b949e;margin-top:3px}
+.briefing-stub .bstats{display:flex;gap:12px;font-size:11px;color:#6e7681}
+.briefing-card{background:#0d1120;border:1px solid #1e2638;border-radius:12px;padding:20px 24px;margin-bottom:10px}
+.briefing-card h3{font-size:14px;font-weight:600;color:#f0f6fc;margin-bottom:4px}
+.briefing-card .bmeta{font-size:12px;color:#8b949e;margin-bottom:14px}
+.briefing-text{font-family:'Consolas',monospace;font-size:12px;line-height:1.8;color:#c9d1d9;white-space:pre-wrap;max-height:500px;overflow-y:auto;background:#0a0e17;border-radius:6px;padding:14px;border:1px solid #1e2638}
+
+/* SEARCH */
+.search-bar{display:flex;gap:10px;margin-bottom:20px}
+.search-bar input{flex:1;background:#0d1120;border:1px solid #1e2638;border-radius:8px;padding:10px 16px;color:#c9d1d9;font-size:13px;outline:none}
+.search-bar input:focus{border-color:#6366f1}
+.search-bar select{background:#0d1120;border:1px solid #1e2638;border-radius:8px;padding:10px 12px;color:#c9d1d9;font-size:13px;outline:none}
+.search-bar button{padding:10px 20px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(59,130,246,0.3)}
+.search-bar button:hover{opacity:.88}
+
+/* FILTER BAR */
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.fcat{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:#0d1120;border:1px solid #1e2638;color:#8b949e;transition:all .15s}
+.fcat:hover{border-color:#6366f1;color:#c9d1d9}
+.fcat.active{background:#1e1b4b;border-color:#6366f1;color:#a5b4fc}
+
+/* AUTO-REFRESH BADGE */
+.auto-refresh-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#0a2a1a;border:1px solid #059669;border-radius:8px;margin-bottom:14px;font-size:12px;color:#34d399}
+.auto-refresh-bar .pulse{width:8px;height:8px;border-radius:50%;background:#10b981;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+/* ═══════════════════════════════════
+   SCHEDULER PAGE
+═══════════════════════════════════ */
+.sched-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+@media(max-width:900px){.sched-grid{grid-template-columns:1fr}}
+
+/* Interval picker */
+.interval-card{background:#0d1120;border:1px solid #1e2638;border-radius:10px;padding:22px}
+.interval-card h3{font-size:14px;font-weight:600;color:#f0f6fc;margin-bottom:16px}
+.interval-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.interval-btn{background:#0d1120;border:2px solid #1e2638;border-radius:12px;padding:18px 10px;text-align:center;cursor:pointer;transition:all .2s}
+.interval-btn:hover{border-color:#6366f1;background:#1e1b4b}
+.interval-btn.selected{border-color:#6366f1;background:#1e1b4b}
+.interval-btn .itime{font-size:20px;font-weight:700;color:#f0f6fc;display:block}
+.interval-btn .ilabel{font-size:11px;color:#8b949e;margin-top:3px;display:block}
+.interval-btn.selected .itime{color:#a5b4fc}
+.interval-btn.selected .ilabel{color:#a5b4fc}
+.sched-actions{display:flex;gap:10px}
+.btn-start{padding:10px 22px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:6px;color:#fff;font-size:13px;font-weight:600}
+.btn-start:hover{opacity:.88}
+.btn-start:disabled{opacity:.4;cursor:not-allowed}
+.btn-stop{padding:10px 22px;background:linear-gradient(135deg,#dc2626,#ef4444);border:none;border-radius:6px;color:#fff;font-size:13px;font-weight:600}
+.btn-stop:hover{opacity:.88}
+.btn-stop:disabled{opacity:.4;cursor:not-allowed}
+.btn-runnow{padding:10px 22px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;border-radius:6px;color:#fff;font-size:13px;font-weight:600}
+.btn-runnow:hover{opacity:.88}
+
+/* Status card */
+.status-card{background:#0d1120;border:1px solid #1e2638;border-radius:10px;padding:22px}
+.status-card h3{font-size:14px;font-weight:600;color:#f0f6fc;margin-bottom:16px}
+.status-indicator{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.status-dot{width:12px;height:12px;border-radius:50%;background:#da3633;transition:background .3s;flex-shrink:0}
+.status-dot.running{background:#10b981;animation:pulse 1.5s infinite}
+.status-label{font-size:16px;font-weight:700;color:#f0f6fc}
+.status-sub{font-size:12px;color:#8b949e;margin-left:auto}
+.status-rows{display:flex;flex-direction:column;gap:8px}
+.status-row{display:flex;justify-content:space-between;padding:8px 10px;background:#080c14;border-radius:6px;font-size:12px}
+.status-row .key{color:#8b949e}
+.status-row .val{color:#f0f6fc;font-weight:500}
+.status-row .val.green{color:#3fb950}
+.status-row .val.blue{color:#58a6ff}
+
+/* Progress & countdown */
+.countdown-card{background:#0d1120;border:1px solid #1e2638;border-radius:10px;padding:22px;margin-bottom:20px}
+.countdown-card h3{font-size:14px;font-weight:600;color:#f0f6fc;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.countdown-display{font-size:40px;font-weight:700;color:#a5b4fc;text-align:center;padding:16px;font-family:'Consolas',monospace;letter-spacing:2px}
+.countdown-label{text-align:center;font-size:12px;color:#8b949e;margin-top:4px}
+.progress-bar-wrap{height:8px;background:#1e293b;border-radius:4px;overflow:hidden;margin-top:14px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:4px;transition:width .5s linear;width:0%}
+
+/* Run log */
+.run-log{background:#0d1120;border:1px solid #1e2638;border-radius:10px;padding:22px}
+.run-log h3{font-size:14px;font-weight:600;color:#f0f6fc;margin-bottom:14px}
+.log-entries{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto}
+.log-entry{background:#080c14;border-left:3px solid #1e2638;border-radius:4px;padding:10px 12px;font-size:12px}
+.log-entry.success{border-left-color:#10b981}
+.log-entry.error{border-left-color:#ef4444}
+.log-entry .log-time{color:#8b949e;font-family:'Consolas',monospace;margin-bottom:4px}
+.log-entry .log-msg{color:#c9d1d9}
+.log-entry .log-stats{color:#3fb950;margin-top:3px}
+.log-empty{text-align:center;padding:30px;color:#6e7681;font-size:12px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:#059669;color:#fff}
+.toast.err{background:#dc2626;color:#fff}
+.toast.info{background:#1d4ed8;color:#fff}
+
+/* API TESTER */
+.api-layout{display:grid;grid-template-columns:220px 1fr;gap:16px}
+.api-sidebar{background:#0d1120;border:1px solid #1e2638;border-radius:8px;padding:10px 0;height:fit-content}
+.api-sg{font-size:10px;font-weight:700;letter-spacing:1px;color:#6e7681;padding:8px 14px 3px;text-transform:uppercase}
+.api-ep{width:100%;text-align:left;background:none;border:none;padding:7px 14px;font-size:12px;color:#8b949e;display:flex;align-items:center;gap:7px;transition:background .15s;border-left:2px solid transparent}
+.api-ep:hover{background:#1e2638;color:#c9d1d9}
+.api-ep.active{background:#1e2638;color:#f0f6fc;border-left-color:#6366f1}
+.mb{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;min-width:34px;text-align:center;flex-shrink:0}
+.mget{background:#0c1a3a;color:#93c5fd}
+.mpost{background:#052e16;color:#86efac}
+.api-main{display:flex;flex-direction:column;gap:10px}
+.api-reqbar{background:#0d1120;border:1px solid #1e2638;border-radius:8px;padding:14px 16px}
+.api-reqbar h3{font-size:13px;font-weight:600;color:#f0f6fc;margin-bottom:4px}
+.api-reqbar p{font-size:12px;color:#8b949e;margin-bottom:12px}
+.api-url-row{display:flex;gap:8px;align-items:center}
+.api-meth{padding:7px 10px;border-radius:5px;font-size:11px;font-weight:700;min-width:48px;text-align:center}
+#api-url{flex:1;background:#080c14;border:1px solid #1e2638;border-radius:5px;padding:7px 12px;color:#c9d1d9;font-size:12px;font-family:'Consolas',monospace;outline:none}
+#api-url:focus{border-color:#6366f1}
+#api-send{padding:7px 18px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:600}
+#api-send:hover{opacity:.88}
+#api-send:disabled{opacity:.4;cursor:not-allowed}
+.api-params{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.api-pf{display:flex;align-items:center;gap:6px}
+.api-pf label{font-size:11px;color:#6e7681;white-space:nowrap}
+.api-pf input,.api-pf select{background:#080c14;border:1px solid #1e2638;border-radius:4px;padding:5px 8px;color:#c9d1d9;font-size:12px;outline:none}
+.api-pf input:focus,.api-pf select:focus{border-color:#6366f1}
+.api-pf select option{background:#0d1120}
+.api-res{background:#080c14;border:1px solid #1e2638;border-radius:8px;min-height:300px}
+.api-res-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #1e2638}
+.api-res-head h4{font-size:12px;font-weight:600;color:#8b949e}
+.res-ok{padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;background:#052e16;color:#86efac}
+.res-err{padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;background:#450a0a;color:#fca5a5}
+#api-json{padding:12px 14px;font-family:'Consolas',monospace;font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-all}
+.jk{color:#f87171}.js{color:#86efac}.jn{color:#fbbf24}.jb{color:#93c5fd}.jnu{color:#64748b}
+
+/* BUTTONS */
+.btn{padding:8px 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-green{background:linear-gradient(135deg,#059669,#10b981);color:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(16,185,129,0.3)}
+.btn-blue{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;padding:10px 20px;box-shadow:0 2px 8px rgba(59,130,246,0.3)}
+.btn-gray{background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:10px 18px}
+
+/* LOADING / EMPTY */
+.loading{text-align:center;padding:40px;color:#6e7681;font-size:13px}
+.empty{text-align:center;padding:40px;color:#6e7681}
+.empty .eicon{font-size:36px;margin-bottom:10px}
+.empty p{font-size:13px}
+
+/* SPINNER */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid #1e2638;border-top-color:#6366f1;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="brand">
+    <h1>&#127757; Daily Tech News</h1>
+    <p>Global Tech Briefing System</p>
+  </div>
+  <nav class="nav">
+    <button class="nav-item active" onclick="showPage('home',this)">
+      <span class="nav-icon">&#127968;</span>Dashboard
+    </button>
+    <button class="nav-item" onclick="showPage('news',this)">
+      <span class="nav-icon">&#128240;</span>News Feed
+    </button>
+    <button class="nav-item" onclick="showPage('briefings',this)">
+      <span class="nav-icon">&#128203;</span>Daily Briefings
+    </button>
+    <button class="nav-item" onclick="showPage('search',this)">
+      <span class="nav-icon">&#128269;</span>Search
+    </button>
+    <button class="nav-item" onclick="showPage('scheduler',this)">
+      <span class="nav-icon">&#9201;</span>Scheduler
+      <span id="sched-nav-dot" style="width:7px;height:7px;border-radius:50%;background:#30363d;margin-left:auto;transition:background .3s"></span>
+    </button>
+    <button class="nav-item" onclick="showPage('api',this)">
+      <span class="nav-icon">&#9881;</span>API Tester
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <span id="conn-dot"></span>
+    <span id="conn-text">Connecting...</span>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="content">
+
+  <!-- ─── DASHBOARD ─── -->
+  <div class="page active" id="page-home">
+    <div class="page-header">
+      <h2>&#127968; Dashboard</h2>
+      <p id="home-sched-status">Loading scheduler status...</p>
+    </div>
+    <div class="stats">
+      <div class="stat-card"><div class="val" id="s-news">--</div><div class="lbl">Total Articles</div></div>
+      <div class="stat-card"><div class="val" id="s-briefs">--</div><div class="lbl">Briefings</div></div>
+      <div class="stat-card"><div class="val" id="s-runs">--</div><div class="lbl">Scheduler Runs</div></div>
+      <div class="stat-card"><div class="val" id="s-cats">10</div><div class="lbl">Categories</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+      <button class="btn btn-green" onclick="triggerFetch()">&#8659; Fetch News Now</button>
+      <button class="btn btn-blue"  onclick="triggerGenerate()">&#9997; Generate Briefing</button>
+      <button class="btn btn-gray"  onclick="loadHome()">&#8635; Refresh</button>
+    </div>
+    <div id="action-result" style="display:none;background:#0d1120;border:1px solid #1e2638;border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:13px"></div>
+    <div class="section">
+      <div class="section-title">Category Breakdown</div>
+      <div id="cat-overview" class="loading">Loading...</div>
+    </div>
+    <div class="section">
+      <div class="section-title">Recent Articles <span class="cnt" id="recent-cnt"></span></div>
+      <div id="home-recent" class="loading">Loading...</div>
+    </div>
+  </div>
+
+  <!-- ─── NEWS FEED ─── -->
+  <div class="page" id="page-news">
+    <div class="page-header">
+      <h2>&#128240; News Feed</h2>
+      <p>All collected technology articles</p>
+    </div>
+    <!-- Auto-refresh banner — shown when scheduler is running -->
+    <div id="news-autorefresh-bar" class="auto-refresh-bar" style="display:none">
+      <span class="pulse"></span>
+      <span id="news-ar-text">Scheduler active — auto-refreshing news feed</span>
+      <span id="news-ar-countdown" style="margin-left:auto;font-family:'Consolas',monospace;font-weight:700"></span>
+    </div>
+    <div class="filter-bar" id="cat-filters"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <label style="font-size:12px;color:#8b949e">Show</label>
+      <select onchange="loadNewsFeed()" id="news-limit" style="background:#0d1120;border:1px solid #1e2638;border-radius:5px;padding:5px 8px;color:#c9d1d9;font-size:12px;outline:none">
+        <option value="20">20</option><option value="50">50</option><option value="100">100</option>
+      </select>
+      <span style="font-size:12px;color:#8b949e">articles</span>
+      <span id="news-total" style="margin-left:auto;font-size:12px;color:#6e7681"></span>
+    </div>
+    <div id="news-list" class="loading">Loading...</div>
+  </div>
+
+  <!-- ─── BRIEFINGS ─── -->
+  <div class="page" id="page-briefings">
+    <div class="page-header">
+      <h2>&#128203; Daily Briefings</h2>
+      <p>Your automated technology briefings</p>
+    </div>
+    <div id="brief-list" class="loading">Loading...</div>
+  </div>
+
+  <!-- ─── SEARCH ─── -->
+  <div class="page" id="page-search">
+    <div class="page-header">
+      <h2>&#128269; Search</h2>
+      <p>Search articles by keyword</p>
+    </div>
+    <div class="search-bar">
+      <input id="search-kw" type="text" placeholder="e.g. openai, quantum, python..."/>
+      <select id="search-limit" style="background:#0d1120;border:1px solid #1e2638;border-radius:6px;padding:9px 12px;color:#c9d1d9;font-size:13px;outline:none">
+        <option value="20">20 results</option><option value="50">50 results</option>
+      </select>
+      <button onclick="doSearch()">Search</button>
+    </div>
+    <div id="search-res"></div>
+  </div>
+
+  <!-- ─── SCHEDULER ─── -->
+  <div class="page" id="page-scheduler">
+    <div class="page-header">
+      <h2>&#9201; Scheduler</h2>
+      <p>Automatically fetch and refresh news at a set interval</p>
+    </div>
+
+    <!-- Countdown + progress bar -->
+    <div class="countdown-card" id="countdown-card" style="display:none">
+      <h3>&#9201; Next Run In</h3>
+      <div class="countdown-display" id="countdown-display">--:--</div>
+      <div class="countdown-label" id="countdown-label">Waiting for next scheduled run</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="sched-grid">
+
+      <!-- Interval picker -->
+      <div class="interval-card">
+        <h3>&#9200; Choose Interval</h3>
+        <div class="interval-options">
+          <div class="interval-btn selected" id="ibtn-1min"  onclick="selectInterval('1min')">
+            <span class="itime">1</span><span class="ilabel">Minute</span>
+          </div>
+          <div class="interval-btn" id="ibtn-5min"  onclick="selectInterval('5min')">
+            <span class="itime">5</span><span class="ilabel">Minutes</span>
+          </div>
+          <div class="interval-btn" id="ibtn-1hour" onclick="selectInterval('1hour')">
+            <span class="itime">1</span><span class="ilabel">Hour</span>
+          </div>
+          <div class="interval-btn" id="ibtn-1day"  onclick="selectInterval('1day')">
+            <span class="itime">1</span><span class="ilabel">Day</span>
+          </div>
+        </div>
+        <div class="sched-actions">
+          <button class="btn-start" id="btn-start" onclick="startScheduler()">&#9654; Start</button>
+          <button class="btn-stop"  id="btn-stop"  onclick="stopScheduler()" disabled>&#9632; Stop</button>
+          <button class="btn-runnow" onclick="runNow()">&#9889; Run Now</button>
+        </div>
+        <p style="font-size:11px;color:#8b949e;margin-top:12px" id="sched-hint">
+          Select an interval and click Start. News will fetch automatically.
+        </p>
+      </div>
+
+      <!-- Live status -->
+      <div class="status-card">
+        <h3>&#128202; Live Status</h3>
+        <div class="status-indicator">
+          <div class="status-dot" id="sched-dot"></div>
+          <span class="status-label" id="sched-label">Stopped</span>
+          <span class="status-sub" id="sched-sub"></span>
+        </div>
+        <div class="status-rows">
+          <div class="status-row"><span class="key">Interval</span><span class="val blue" id="st-interval">--</span></div>
+          <div class="status-row"><span class="key">Started at</span><span class="val" id="st-started">--</span></div>
+          <div class="status-row"><span class="key">Last run</span><span class="val" id="st-lastrun">--</span></div>
+          <div class="status-row"><span class="key">Next run</span><span class="val green" id="st-nextrun">--</span></div>
+          <div class="status-row"><span class="key">Total runs</span><span class="val" id="st-runs">0</span></div>
+          <div class="status-row"><span class="key">Last saved</span><span class="val green" id="st-saved">--</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Run log -->
+    <div class="run-log">
+      <h3>&#128221; Run Log</h3>
+      <div class="log-entries" id="log-entries">
+        <div class="log-empty">No runs yet. Start the scheduler or click Run Now.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── API TESTER ─── -->
+  <div class="page" id="page-api">
+    <div class="page-header">
+      <h2>&#9881; API Tester</h2>
+      <p>Test all REST endpoints live</p>
+    </div>
+    <div class="api-layout">
+      <div class="api-sidebar">
+        <div class="api-sg">System</div>
+        <button class="api-ep active" data-key="health"><span class="mb mget">GET</span>/health</button>
+        <div class="api-sg">News</div>
+        <button class="api-ep" data-key="news"><span class="mb mget">GET</span>/news</button>
+        <button class="api-ep" data-key="news-cat"><span class="mb mget">GET</span>/news/category/:cat</button>
+        <button class="api-ep" data-key="news-search"><span class="mb mget">GET</span>/news/search</button>
+        <button class="api-ep" data-key="news-id"><span class="mb mget">GET</span>/news/:id</button>
+        <div class="api-sg">Briefings</div>
+        <button class="api-ep" data-key="briefs"><span class="mb mget">GET</span>/briefings</button>
+        <button class="api-ep" data-key="brief-date"><span class="mb mget">GET</span>/briefings/:date</button>
+        <div class="api-sg">Actions</div>
+        <button class="api-ep" data-key="fetch"><span class="mb mpost">POST</span>/fetch</button>
+        <button class="api-ep" data-key="generate"><span class="mb mpost">POST</span>/briefing/generate</button>
+        <div class="api-sg">Scheduler</div>
+        <button class="api-ep" data-key="sched-status"><span class="mb mget">GET</span>/scheduler/status</button>
+        <button class="api-ep" data-key="sched-start"><span class="mb mpost">POST</span>/scheduler/start</button>
+        <button class="api-ep" data-key="sched-stop"><span class="mb mpost">POST</span>/scheduler/stop</button>
+        <button class="api-ep" data-key="sched-run"><span class="mb mpost">POST</span>/scheduler/run-now</button>
+        <div class="api-sg">Error Tests</div>
+        <button class="api-ep" data-key="e-cat"><span class="mb mget">GET</span>/news/category/Space</button>
+        <button class="api-ep" data-key="e-404"><span class="mb mget">GET</span>/nonexistent</button>
+      </div>
+      <div class="api-main">
+        <div class="api-reqbar">
+          <h3 id="api-title">Health Check</h3>
+          <p id="api-desc">Verify the server and MongoDB are running.</p>
+          <div class="api-url-row">
+            <div class="api-meth mget" id="api-mdisp">GET</div>
+            <input id="api-url" type="text" value="http://localhost:5000/health"/>
+            <button id="api-send" onclick="apiSend()">Send</button>
+          </div>
+          <div class="api-params" id="api-params"></div>
+        </div>
+        <div class="api-res">
+          <div class="api-res-head">
+            <h4>Response</h4>
+            <span id="api-spill" style="display:none"></span>
+            <span id="api-ms" style="font-size:11px;color:#6e7681"></span>
+            <span id="api-total" style="display:none;margin-left:auto;font-size:11px;background:#21262d;padding:2px 8px;border-radius:8px;color:#8b949e"></span>
+          </div>
+          <div id="api-json"><div class="empty"><div class="eicon">&#128225;</div><p>Select an endpoint and click Send</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE = 'http://localhost:5000';
+
+// ══════════════════════════════════════════════
+// CATEGORIES
+// ══════════════════════════════════════════════
+const CATS = ['AI','Agentic AI','Quantum Computing','Cloud Computing','Cybersecurity',
+              'Programming','Developer Tools','Startups','Technology Companies','Other Technology'];
+const CATPILL = {
+  'AI':'pill-ai','Agentic AI':'pill-agentic','Quantum Computing':'pill-quantum',
+  'Cloud Computing':'pill-cloud','Cybersecurity':'pill-cyber','Programming':'pill-prog',
+  'Developer Tools':'pill-devtools','Startups':'pill-startups',
+  'Technology Companies':'pill-companies','Other Technology':'pill-other'
+};
+function pillClass(c){ return CATPILL[c]||'pill-other'; }
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+const PAGE_LOADERS = {
+  home: loadHome, news: loadNewsFeed,
+  briefings: loadBriefings, search: ()=>{},
+  scheduler: loadSchedulerPage, api: ()=>{}
+};
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(PAGE_LOADERS[name]) PAGE_LOADERS[name]();
+}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+let _toastTimer;
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>{ t.classList.remove('show'); }, 3500);
+}
+
+// ══════════════════════════════════════════════
+// API HELPERS
+// ══════════════════════════════════════════════
+async function apiFetch(path, method='GET', body=null) {
+  const opts = { method };
+  if(body){ opts.headers={'Content-Type':'application/json'}; opts.body=JSON.stringify(body); }
+  const r = await fetch(BASE+path, opts);
+  return { status: r.status, data: await r.json() };
+}
+
+// ══════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(d){
+  if(!d) return '--';
+  try{ return new Date(d).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+  catch{ return '--'; }
+}
+function scoreBadge(s){
+  if(s==null) return '';
+  const cls = s>=60?'hi':s>=35?'mid':'lo';
+  return `<span class="score-badge ${cls}">Score: ${s}</span>`;
+}
+function articleHTML(a, isNew=false){
+  const pill = pillClass(a.category);
+  return `<div class="news-card${isNew?' new-flash':''}">
+    <div class="news-card-top">
+      <span class="cat-pill ${pill}">${esc(a.category||'')}</span>
+      <div class="news-card-title">${esc(a.title||'')}</div>
+    </div>
+    <div class="news-card-desc">${esc(a.description||'')}</div>
+    <div class="news-card-meta">
+      <span>${esc(a.source||'')}</span>
+      <span>${fmtDate(a.published_at)}</span>
+      ${scoreBadge(a.score)}
+      ${a.url?`<a class="read-link" href="${esc(a.url)}" target="_blank">Read &#8599;</a>`:''}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// CONNECTION CHECK
+// ══════════════════════════════════════════════
+async function checkConn(){
+  const dot=document.getElementById('conn-dot'), txt=document.getElementById('conn-text');
+  try{
+    const {data} = await apiFetch('/health');
+    if(data.data?.status==='healthy'){
+      dot.className='ok';
+      txt.textContent = (data.data.collections?.news||0)+' articles';
+    } else { dot.className=''; txt.textContent='DB issue'; }
+  } catch { dot.className=''; txt.textContent='Offline'; }
+}
+
+// ══════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════
+async function loadHome(){
+  try{
+    const {data} = await apiFetch('/health');
+    const c = data.data?.collections||{};
+    document.getElementById('s-news').textContent   = c.news||0;
+    document.getElementById('s-briefs').textContent = c.daily_briefings||0;
+  }catch{}
+
+  // Scheduler run count
+  try{
+    const {data} = await apiFetch('/scheduler/status');
+    const st = data.data||{};
+    document.getElementById('s-runs').textContent = st.run_count||0;
+    const p = document.getElementById('home-sched-status');
+    p.textContent = st.running
+      ? `Scheduler running — ${st.interval_label} — next run: ${fmtDate(st.next_run_at)}`
+      : 'Scheduler is stopped. Go to Scheduler page to start.';
+    p.style.color = st.running ? '#3fb950' : '#8b949e';
+  }catch{}
+
+  // Category breakdown
+  try{
+    const {data} = await apiFetch('/news?limit=200');
+    const arts = data.data||[];
+    const counts={};
+    arts.forEach(a=>{ counts[a.category]=(counts[a.category]||0)+1; });
+    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    const max = sorted[0]?.[1]||1;
+    let html='<div style="display:flex;flex-direction:column;gap:8px">';
+    sorted.forEach(([cat,cnt])=>{
+      const pct=Math.round(cnt/max*100);
+      html+=`<div style="display:flex;align-items:center;gap:10px">
+        <span class="cat-pill ${pillClass(cat)}" style="min-width:170px">${esc(cat)}</span>
+        <div style="flex:1;height:10px;background:#1e293b;border-radius:6px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:6px"></div>
+        </div>
+        <span style="font-size:13px;color:#e2e8f0;font-weight:600;min-width:30px;text-align:right">${cnt}</span>
+      </div>`;
+    });
+    html+='</div>';
+    document.getElementById('cat-overview').innerHTML = html||'<div class="empty"><p>No data yet</p></div>';
+  }catch{ document.getElementById('cat-overview').innerHTML='<div class="empty"><p>Could not load</p></div>'; }
+
+  // Recent articles
+  try{
+    const {data} = await apiFetch('/news?limit=5');
+    const arts = data.data||[];
+    document.getElementById('recent-cnt').textContent = arts.length;
+    document.getElementById('home-recent').innerHTML = arts.length
+      ? '<div class="news-grid">'+arts.map(a=>articleHTML(a)).join('')+'</div>'
+      : '<div class="empty"><div class="eicon">&#128240;</div><p>No articles yet.</p></div>';
+  }catch{ document.getElementById('home-recent').innerHTML='<div class="empty"><p>Could not load</p></div>'; }
+}
+
+async function triggerFetch(){
+  const box=document.getElementById('action-result');
+  box.style.display='block';
+  box.innerHTML='<span class="spin"></span>Fetching... (30-60 seconds)';
+  try{
+    const {data} = await apiFetch('/fetch','POST');
+    const d=data.data||{};
+    box.innerHTML=`<span style="color:#3fb950">&#10003; Done!</span> &nbsp; Fetched: ${d.fetched} &nbsp;|&nbsp; Saved: ${d.saved} new &nbsp;|&nbsp; Skipped: ${d.skipped} duplicates`;
+    loadHome();
+  }catch{ box.innerHTML='<span style="color:#f85149">Fetch failed.</span>'; }
+}
+async function triggerGenerate(){
+  const box=document.getElementById('action-result');
+  box.style.display='block';
+  box.innerHTML='<span class="spin"></span>Generating briefing...';
+  try{
+    const {data} = await apiFetch('/briefing/generate','POST');
+    const d=data.data||{};
+    if(data.error) box.innerHTML=`<span style="color:#f85149">${esc(data.message)}</span>`;
+    else box.innerHTML=`<span style="color:#3fb950">&#10003; Briefing generated!</span> &nbsp; ${d.briefing_date} &nbsp;|&nbsp; ${d.top_news_count} articles selected`;
+  }catch{ box.innerHTML='<span style="color:#f85149">Failed.</span>'; }
+}
+
+// ══════════════════════════════════════════════
+// NEWS FEED
+// ══════════════════════════════════════════════
+let activeCat='All';
+let _lastNewsIds = new Set();   // track article IDs to detect new ones
+let _newsArInterval = null;     // interval timer for auto-refresh countdown
+
+function buildCatFilters(){
+  const fb=document.getElementById('cat-filters');
+  if(fb.children.length>0) return;
+  ['All',...CATS].forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='fcat'+(c==='All'?' active':'');
+    btn.textContent=c;
+    btn.onclick=()=>{ activeCat=c; document.querySelectorAll('.fcat').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); loadNewsFeed(); };
+    fb.appendChild(btn);
+  });
+}
+
+async function loadNewsFeed(flash=false){
+  buildCatFilters();
+  const limit=document.getElementById('news-limit').value;
+  const list =document.getElementById('news-list');
+  const tot  =document.getElementById('news-total');
+
+  if(!flash) list.innerHTML='<div class="loading"><span class="spin"></span>Loading articles...</div>';
+
+  try{
+    const path = activeCat==='All'
+      ? `/news?limit=${limit}`
+      : `/news/category/${encodeURIComponent(activeCat)}?limit=${limit}`;
+    const {data} = await apiFetch(path);
+    const arts = data.data||[];
+    tot.textContent = arts.length+' articles';
+
+    // Detect newly arrived articles (flash animation)
+    const newIds = new Set(arts.map(a=>a._id));
+    const freshIds = flash ? new Set([...newIds].filter(id=>!_lastNewsIds.has(id))) : new Set();
+    _lastNewsIds = newIds;
+
+    list.innerHTML = arts.length
+      ? '<div class="news-grid">'+arts.map(a=>articleHTML(a, freshIds.has(a._id))).join('')+'</div>'
+      : '<div class="empty"><div class="eicon">&#128240;</div><p>No articles found.</p></div>';
+  }catch{
+    list.innerHTML='<div class="empty"><p>Could not load. Is the server running?</p></div>';
+  }
+}
+
+// Called by scheduler system when a run completes
+function onSchedulerRan(){
+  // If the user is on the news page, refresh it with flash effect
+  if(document.getElementById('page-news').classList.contains('active')){
+    loadNewsFeed(true);
+    toast('News feed refreshed automatically!','info');
+  }
+}
+
+// Update the auto-refresh banner on news page
+function updateNewsAutoRefreshBanner(schedState){
+  const bar = document.getElementById('news-autorefresh-bar');
+  if(!schedState.running){ bar.style.display='none'; return; }
+  bar.style.display='flex';
+  document.getElementById('news-ar-text').textContent =
+    `Scheduler active — refreshing ${schedState.interval_label}`;
+}
+
+// ══════════════════════════════════════════════
+// BRIEFINGS
+// ══════════════════════════════════════════════
+async function loadBriefings(){
+  const bl=document.getElementById('brief-list');
+  bl.innerHTML='<div class="loading"><span class="spin"></span>Loading...</div>';
+  try{
+    const {data} = await apiFetch('/briefings?limit=30');
+    const briefs = data.data||[];
+    if(!briefs.length){
+      bl.innerHTML='<div class="empty"><div class="eicon">&#128203;</div><p>No briefings yet.</p></div>';
+      return;
+    }
+    bl.innerHTML = briefs.map(b=>`
+      <div class="briefing-stub" onclick="loadFullBrief('${esc(b.briefing_date)}',this)">
+        <div>
+          <h4>&#128203; Briefing — ${esc(b.briefing_date)}</h4>
+          <div class="bmeta2">Generated: ${fmtDate(b.generated_at)} &nbsp;|&nbsp; ${b.top_news_count} selected</div>
+        </div>
+        <div class="bstats"><span>${b.total_news} collected</span><span style="color:#58a6ff">View &#8594;</span></div>
+      </div>
+      <div id="brief-${esc(b.briefing_date)}" style="display:none;margin-bottom:8px"></div>
+    `).join('');
+  }catch{ bl.innerHTML='<div class="empty"><p>Could not load briefings.</p></div>'; }
+}
+async function loadFullBrief(date, stub){
+  const c=document.getElementById('brief-'+date);
+  if(c.style.display==='block'){ c.style.display='none'; return; }
+  c.style.display='block';
+  c.innerHTML='<div class="briefing-card"><div class="loading"><span class="spin"></span>Loading...</div></div>';
+  try{
+    const {data} = await apiFetch('/briefings/'+date);
+    const b=data.data||{};
+    const catHtml=Object.entries(b.categories||{}).sort((a,b)=>b[1]-a[1])
+      .map(([cat,n])=>`<span class="cat-pill ${pillClass(cat)}" style="margin:2px">${esc(cat)}: ${n}</span>`).join('');
+    c.innerHTML=`<div class="briefing-card">
+      <h3>&#128203; Briefing — ${esc(b.briefing_date)}</h3>
+      <div class="bmeta">${b.total_news} collected &nbsp;|&nbsp; ${(b.top_news||[]).length} selected</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">${catHtml}</div>
+      <div class="briefing-text">${esc(b.briefing_text||'No text.')}</div>
+    </div>`;
+  }catch{ c.innerHTML='<div class="briefing-card"><p style="color:#f85149">Could not load.</p></div>'; }
+}
+
+// ══════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════
+async function doSearch(){
+  const kw=document.getElementById('search-kw').value.trim();
+  const limit=document.getElementById('search-limit').value;
+  const box=document.getElementById('search-res');
+  if(!kw){ box.innerHTML='<div class="empty"><p>Enter a keyword.</p></div>'; return; }
+  box.innerHTML='<div class="loading"><span class="spin"></span>Searching...</div>';
+  try{
+    const {data} = await apiFetch(`/news/search?keyword=${encodeURIComponent(kw)}&limit=${limit}`);
+    const arts=data.data||[];
+    if(data.error){ box.innerHTML=`<div class="empty"><p style="color:#f85149">${esc(data.message)}</p></div>`; return; }
+    box.innerHTML=`<div style="font-size:12px;color:#8b949e;margin-bottom:12px">${esc(data.message)}</div>`
+      +(arts.length?'<div class="news-grid">'+arts.map(a=>articleHTML(a)).join('')+'</div>'
+        :'<div class="empty"><div class="eicon">&#128269;</div><p>No results for "'+esc(kw)+'"</p></div>');
+  }catch{ box.innerHTML='<div class="empty"><p>Search failed.</p></div>'; }
+}
+document.getElementById('search-kw').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
+
+// ══════════════════════════════════════════════
+// ═══════════ SCHEDULER PAGE ═══════════════════
+// ══════════════════════════════════════════════
+let selectedInterval = '1min';
+let _schedPollTimer  = null;   // poll backend for status every 2s when running
+let _countdownTimer  = null;   // 1s tick to update countdown display
+let _nextRunTs       = null;   // epoch ms of next run
+let _intervalSecs    = null;   // current interval in seconds
+let _prevRunCount    = 0;      // detect when a new run has happened
+let _logEntries      = [];     // local run log
+
+function selectInterval(key){
+  selectedInterval = key;
+  ['1min','5min','1hour','1day'].forEach(k=>{
+    document.getElementById('ibtn-'+k).classList.toggle('selected', k===key);
+  });
+}
+
+async function loadSchedulerPage(){
+  await refreshSchedulerStatus();
+}
+
+async function startScheduler(){
+  document.getElementById('btn-start').disabled = true;
+  try{
+    const {data} = await apiFetch('/scheduler/start','POST',{interval: selectedInterval});
+    if(data.error){
+      toast(data.message, 'err');
+    } else {
+      toast(`Scheduler started — ${data.data.interval_label}`, 'ok');
+      document.getElementById('sched-hint').textContent =
+        `Running ${data.data.interval_label}. News will auto-fetch and display.`;
+      startSchedPolling();
+      await refreshSchedulerStatus();
+    }
+  }catch{ toast('Could not start scheduler.','err'); }
+  finally{ document.getElementById('btn-start').disabled=false; }
+}
+
+async function stopScheduler(){
+  document.getElementById('btn-stop').disabled = true;
+  try{
+    const {data} = await apiFetch('/scheduler/stop','POST');
+    if(data.error){ toast(data.message,'err'); }
+    else {
+      toast('Scheduler stopped.','info');
+      stopSchedPolling();
+      await refreshSchedulerStatus();
+    }
+  }catch{ toast('Could not stop scheduler.','err'); }
+  finally{ document.getElementById('btn-stop').disabled=false; }
+}
+
+async function runNow(){
+  toast('Running now...','info');
+  const startTime = Date.now();
+  try{
+    const {data} = await apiFetch('/scheduler/run-now','POST');
+    const elapsed = ((Date.now()-startTime)/1000).toFixed(1);
+    if(data.error){
+      toast(data.message,'err');
+      addLogEntry('error',`Manual run failed: ${data.message}`,null);
+    } else {
+      const d = data.data||{};
+      toast(`Done! ${d.saved} new articles saved.`,'ok');
+      addLogEntry('success',`Manual run (${elapsed}s)`,d);
+      await refreshSchedulerStatus();
+      onSchedulerRan();
+    }
+  }catch{ toast('Run failed.','err'); }
+}
+
+async function refreshSchedulerStatus(){
+  try{
+    const {data} = await apiFetch('/scheduler/status');
+    const st = data.data||{};
+    renderSchedulerStatus(st);
+
+    // Detect if a new run just happened
+    if(st.run_count > _prevRunCount && _prevRunCount > 0){
+      const cnt = st.run_count - _prevRunCount;
+      for(let i=0;i<cnt;i++){
+        addLogEntry('success','Scheduled run completed', st.last_result);
+      }
+      onSchedulerRan();
+    }
+    _prevRunCount = st.run_count||0;
+
+    // Update news page banner
+    updateNewsAutoRefreshBanner(st);
+    // Update sidebar dot
+    document.getElementById('sched-nav-dot').style.background = st.running?'#238636':'#30363d';
+    // Update home page status text
+    const hp = document.getElementById('home-sched-status');
+    if(hp){
+      hp.textContent = st.running
+        ? `Scheduler running — ${st.interval_label} — next run: ${fmtDate(st.next_run_at)}`
+        : 'Scheduler stopped. Go to Scheduler page to start.';
+      hp.style.color = st.running?'#3fb950':'#8b949e';
+    }
+    // Update home run count
+    const sr = document.getElementById('s-runs');
+    if(sr) sr.textContent = st.run_count||0;
+
+  }catch{}
+}
+
+function renderSchedulerStatus(st){
+  // Dot + label
+  const dot   = document.getElementById('sched-dot');
+  const label = document.getElementById('sched-label');
+  const sub   = document.getElementById('sched-sub');
+
+  if(st.running){
+    dot.className   = 'status-dot running';
+    label.textContent = 'Running';
+    sub.textContent   = st.interval_label||'';
+    document.getElementById('btn-start').disabled = true;
+    document.getElementById('btn-stop').disabled  = false;
+  } else {
+    dot.className   = 'status-dot';
+    label.textContent = 'Stopped';
+    sub.textContent   = '';
+    document.getElementById('btn-start').disabled = false;
+    document.getElementById('btn-stop').disabled  = true;
+  }
+
+  // Status rows
+  document.getElementById('st-interval').textContent = st.interval_label||'--';
+  document.getElementById('st-started').textContent  = st.started_at   ? fmtDate(st.started_at)  : '--';
+  document.getElementById('st-lastrun').textContent  = st.last_run_at  ? fmtDate(st.last_run_at) : '--';
+  document.getElementById('st-nextrun').textContent  = st.next_run_at  ? fmtDate(st.next_run_at) : '--';
+  document.getElementById('st-runs').textContent     = st.run_count||0;
+  const lr = st.last_result;
+  document.getElementById('st-saved').textContent = lr
+    ? (lr.error ? 'Error' : `${lr.saved} new / ${lr.fetched} fetched`)
+    : '--';
+
+  // Countdown card
+  const card = document.getElementById('countdown-card');
+  if(st.running && st.next_run_at){
+    card.style.display = 'block';
+    _nextRunTs   = new Date(st.next_run_at).getTime();
+    _intervalSecs = st.interval_secs||60;
+    startCountdown();
+  } else {
+    card.style.display = 'none';
+    stopCountdown();
+  }
+
+  // Sync interval selector to match running state
+  if(st.running && st.interval_key){
+    selectInterval(st.interval_key);
+  }
+}
+
+// ── COUNTDOWN TIMER ──
+function startCountdown(){
+  stopCountdown();
+  _countdownTimer = setInterval(tickCountdown, 1000);
+  tickCountdown();
+}
+function stopCountdown(){
+  if(_countdownTimer){ clearInterval(_countdownTimer); _countdownTimer=null; }
+}
+function tickCountdown(){
+  if(!_nextRunTs){ stopCountdown(); return; }
+  const now  = Date.now();
+  const diff = Math.max(0, Math.floor((_nextRunTs - now)/1000));
+
+  const h = Math.floor(diff/3600);
+  const m = Math.floor((diff%3600)/60);
+  const s = diff%60;
+
+  let display;
+  if(h>0) display = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  else     display = `${pad(m)}:${pad(s)}`;
+
+  document.getElementById('countdown-display').textContent = display;
+
+  const label = diff===0 ? 'Running now...' : `Next fetch in`;
+  document.getElementById('countdown-label').textContent = label;
+
+  // Progress bar: % of interval elapsed
+  const elapsed = _intervalSecs - diff;
+  const pct = Math.min(100, Math.round((elapsed/_intervalSecs)*100));
+  document.getElementById('progress-bar').style.width = pct+'%';
+
+  // Update news page countdown badge
+  const badge = document.getElementById('news-ar-countdown');
+  if(badge) badge.textContent = display;
+}
+function pad(n){ return String(n).padStart(2,'0'); }
+
+// ── SCHEDULER POLLING ──
+function startSchedPolling(){
+  stopSchedPolling();
+  _schedPollTimer = setInterval(refreshSchedulerStatus, 2000);
+}
+function stopSchedPolling(){
+  if(_schedPollTimer){ clearInterval(_schedPollTimer); _schedPollTimer=null; }
+}
+
+// ── RUN LOG ──
+function addLogEntry(type, msg, result){
+  const now = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  _logEntries.unshift({ type, msg, result, time: now });
+  if(_logEntries.length > 50) _logEntries.pop();
+  renderLog();
+}
+function renderLog(){
+  const container = document.getElementById('log-entries');
+  if(!_logEntries.length){
+    container.innerHTML='<div class="log-empty">No runs yet.</div>';
+    return;
+  }
+  container.innerHTML = _logEntries.map(e=>{
+    let stats='';
+    if(e.result && !e.result.error){
+      stats=`<div class="log-stats">Saved: ${e.result.saved||0} new &nbsp;|&nbsp; Fetched: ${e.result.fetched||0} &nbsp;|&nbsp; Skipped: ${e.result.skipped||0}</div>`;
+    } else if(e.result?.error){
+      stats=`<div style="color:#f85149;margin-top:3px">${esc(e.result.error)}</div>`;
+    }
+    return `<div class="log-entry ${e.type}">
+      <div class="log-time">${e.time}</div>
+      <div class="log-msg">${esc(e.msg)}</div>
+      ${stats}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// API TESTER
+// ══════════════════════════════════════════════
+const today = new Date().toISOString().slice(0,10);
+const API_EPS = {
+  health:       {title:'Health Check',        desc:'Verify the server and MongoDB.',                    m:'GET',  url:`${BASE}/health`,                ps:[]},
+  news:         {title:'Latest News',         desc:'Latest articles from MongoDB.',                     m:'GET',  url:`${BASE}/news`,                  ps:[{n:'limit',l:'Limit',t:'num',def:'20',ph:'1-100'}]},
+  'news-cat':   {title:'News by Category',    desc:'Filter articles by category.',                      m:'GET',  url:`${BASE}/news/category/`,        ps:[{n:'category',l:'Category',t:'sel',opts:CATS},{n:'limit',l:'Limit',t:'num',def:'10',ph:''}]},
+  'news-search':{title:'Search News',         desc:'Keyword search.',                                   m:'GET',  url:`${BASE}/news/search`,           ps:[{n:'keyword',l:'Keyword',t:'txt',def:'',ph:'e.g. openai'},{n:'limit',l:'Limit',t:'num',def:'10',ph:''}]},
+  'news-id':    {title:'Article by ID',       desc:'One article by MongoDB _id.',                       m:'GET',  url:`${BASE}/news/`,                 ps:[{n:'id',l:'ID',t:'txt',def:'',ph:'24-char hex'}]},
+  briefs:       {title:'All Briefings',       desc:'List all past briefings.',                          m:'GET',  url:`${BASE}/briefings`,             ps:[{n:'limit',l:'Limit',t:'num',def:'10',ph:''}]},
+  'brief-date': {title:'Briefing by Date',    desc:'Full briefing for a date.',                         m:'GET',  url:`${BASE}/briefings/`,            ps:[{n:'date',l:'Date',t:'txt',def:today,ph:'YYYY-MM-DD'}]},
+  fetch:        {title:'Fetch News',          desc:'Trigger live news fetch from NewsAPI.',             m:'POST', url:`${BASE}/fetch`,                 ps:[]},
+  generate:     {title:'Generate Briefing',   desc:"Build today's briefing.",                           m:'POST', url:`${BASE}/briefing/generate`,     ps:[]},
+  'sched-status':{title:'Scheduler Status',   desc:'Get current scheduler state.',                      m:'GET',  url:`${BASE}/scheduler/status`,      ps:[]},
+  'sched-start':{title:'Scheduler Start',     desc:'Start scheduler. Body: {"interval":"5min"}',        m:'POST', url:`${BASE}/scheduler/start`,       ps:[{n:'interval',l:'Interval',t:'sel',opts:['1min','5min','1hour','1day']}]},
+  'sched-stop': {title:'Scheduler Stop',      desc:'Stop the scheduler.',                               m:'POST', url:`${BASE}/scheduler/stop`,        ps:[]},
+  'sched-run':  {title:'Run Now',             desc:'Run the job immediately once.',                     m:'POST', url:`${BASE}/scheduler/run-now`,     ps:[]},
+  'e-cat':      {title:'Error: Bad Category', desc:'Expect 400.',                                       m:'GET',  url:`${BASE}/news/category/Space`,   ps:[]},
+  'e-404':      {title:'Error: 404',          desc:'Expect 404.',                                       m:'GET',  url:`${BASE}/nonexistent`,           ps:[]},
+};
+
+let apiCur='health';
+document.querySelectorAll('.api-ep').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.api-ep').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    apiCur=btn.dataset.key;
+    apiLoad(apiCur);
+  });
+});
+
+function apiLoad(key){
+  const ep=API_EPS[key];
+  if(!ep) return;
+  document.getElementById('api-title').textContent=ep.title;
+  document.getElementById('api-desc').textContent=ep.desc;
+  const md=document.getElementById('api-mdisp');
+  md.textContent=ep.m; md.className='api-meth '+(ep.m==='POST'?'mpost':'mget');
+  document.getElementById('api-url').value=ep.url;
+  const pc=document.getElementById('api-params');
+  pc.innerHTML='';
+  (ep.ps||[]).forEach(p=>{
+    const d=document.createElement('div'); d.className='api-pf';
+    d.innerHTML=`<label>${p.l}</label>`;
+    if(p.t==='sel'){
+      const s=document.createElement('select'); s.id='ap-'+p.n;
+      (p.opts||[]).forEach(o=>{ const op=document.createElement('option'); op.value=o; op.textContent=o; s.appendChild(op); });
+      d.appendChild(s);
+    } else {
+      const i=document.createElement('input');
+      i.type=p.t==='num'?'number':'text'; i.id='ap-'+p.n;
+      i.value=p.def||''; i.placeholder=p.ph||'';
+      i.style.width=p.t==='num'?'65px':'180px';
+      d.appendChild(i);
+    }
+    pc.appendChild(d);
+  });
+  document.getElementById('api-json').innerHTML='<div class="empty"><div class="eicon">&#128225;</div><p>Click Send</p></div>';
+  document.getElementById('api-spill').style.display='none';
+  document.getElementById('api-ms').textContent='';
+  document.getElementById('api-total').style.display='none';
+}
+
+function apiBuildUrl(ep){
+  let url=ep.url; const q=[];
+  (ep.ps||[]).forEach(p=>{
+    const el=document.getElementById('ap-'+p.n); if(!el) return;
+    const v=el.value.trim(); if(!v) return;
+    if(['category','id','date'].includes(p.n)) url=url.endsWith('/')?url+encodeURIComponent(v):url+'/'+encodeURIComponent(v);
+    else q.push(`${p.n}=${encodeURIComponent(v)}`);
+  });
+  if(q.length) url+='?'+q.join('&');
+  return url;
+}
+
+async function apiSend(){
+  const ep=API_EPS[apiCur]; if(!ep) return;
+  const btn=document.getElementById('api-send');
+  const url=apiBuildUrl(ep);
+  document.getElementById('api-url').value=url;
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>';
+
+  // For scheduler start, build body from param
+  let body=null;
+  if(apiCur==='sched-start'){
+    const el=document.getElementById('ap-interval');
+    if(el) body={interval:el.value};
+  }
+
+  const t0=Date.now();
+  try{
+    const opts={method:ep.m};
+    if(ep.m==='POST'){ opts.headers={'Content-Type':'application/json'}; opts.body=JSON.stringify(body||{}); }
+    const res=await fetch(url,opts);
+    const ms=Date.now()-t0;
+    const data=await res.json();
+    const ok=res.status>=200&&res.status<300;
+    const sp=document.getElementById('api-spill');
+    sp.textContent=res.status+(ok?' OK':' ERROR');
+    sp.className=ok?'res-ok':'res-err';
+    sp.style.display='inline-block';
+    document.getElementById('api-ms').textContent=ms+'ms';
+    const tp=document.getElementById('api-total');
+    if(data.total!=null){tp.textContent=data.total+' results';tp.style.display='inline-block';}
+    else tp.style.display='none';
+    document.getElementById('api-json').innerHTML=apiHL(JSON.stringify(data,null,2));
+  }catch{
+    document.getElementById('api-json').innerHTML='<div class="empty"><div class="eicon">&#10060;</div><p>Server unreachable.</p></div>';
+  }finally{ btn.disabled=false; btn.textContent='Send'; }
+}
+
+function apiHL(json){
+  json=json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return json.replace(/("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{
+    let c='jn';
+    if(/^"/.test(m)){c=/:$/.test(m)?'jk':'js';}
+    else if(/true|false/.test(m)){c='jb';}
+    else if(/null/.test(m)){c='jnu';}
+    return `<span class="${c}">${m}</span>`;
+  });
+}
+
+// ══════════════════════════════════════════════
+// GLOBAL SCHEDULER POLL — runs on every page
+// ══════════════════════════════════════════════
+async function globalSchedPoll(){
+  await refreshSchedulerStatus();
+}
+
+// ══════════════════════════════════════════════
+// STARTUP
+// ══════════════════════════════════════════════
+checkConn();
+loadHome();
+refreshSchedulerStatus();     // load scheduler state immediately
+startSchedPolling();           // begin polling even before scheduler page is opened
+
+setInterval(checkConn, 30000);
+</script>
+</body>
+</html>
